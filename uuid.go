@@ -36,6 +36,7 @@ import (
 	"hash"
 	"net"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -195,17 +196,19 @@ func (u UUID) Bytes() []byte {
 // Returns canonical string representation of UUID:
 // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
 func (u UUID) String() string {
-	buf := make([]byte, 36)
+	buf := make([]byte, 32)
 
-	hex.Encode(buf[0:8], u[0:4])
-	buf[8] = dash
-	hex.Encode(buf[9:13], u[4:6])
-	buf[13] = dash
-	hex.Encode(buf[14:18], u[6:8])
-	buf[18] = dash
-	hex.Encode(buf[19:23], u[8:10])
-	buf[23] = dash
-	hex.Encode(buf[24:], u[10:])
+	hex.Encode(buf[0:], u[0:])
+
+	// nolanc:
+	//buf[8] = dash
+	//hex.Encode(buf[9:13], u[4:6])
+	//buf[13] = dash
+	//hex.Encode(buf[14:18], u[6:8])
+	//buf[18] = dash
+	//hex.Encode(buf[19:23], u[8:10])
+	//buf[23] = dash
+	//hex.Encode(buf[24:], u[10:])
 
 	return string(buf)
 }
@@ -224,15 +227,34 @@ func (u *UUID) SetVariant() {
 // The encoding is the same as returned by String.
 func (u UUID) MarshalText() (text []byte, err error) {
 	text = []byte(u.String())
+
+	// nolanc:
+	text = []byte(strings.Replace(string(text), "-", "", -1))
+
 	return
 }
 
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
 // Following formats are supported:
+// "6ba7b8109dad11d180b400c04fd430c8",
 // "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
 // "{6ba7b810-9dad-11d1-80b4-00c04fd430c8}",
 // "urn:uuid:6ba7b810-9dad-11d1-80b4-00c04fd430c8"
 func (u *UUID) UnmarshalText(text []byte) (err error) {
+	// nolanc:
+	if strings.Index(string(text), "-") == -1 && len(text) == 32 {
+		b, err := hex.DecodeString(string(text))
+		if err != nil {
+			return err
+		}
+
+		for i := range b {
+			(*u)[i] = b[i]
+		}
+
+		return nil
+	}
+
 	if len(text) < 32 {
 		err = fmt.Errorf("uuid: UUID string too short: %s", text)
 		return
