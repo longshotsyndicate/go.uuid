@@ -196,9 +196,9 @@ func (u UUID) Bytes() []byte {
 // Returns canonical string representation of UUID:
 // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
 func (u UUID) String() string {
-	buf := make([]byte, 32)
+	buf := make([]byte, 36)
 
-	hex.Encode(buf[0:], u[0:])
+	hex.Encode(buf[0:], u[0:4])
 
 	buf[8] = dash
 	hex.Encode(buf[9:13], u[4:6])

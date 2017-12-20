@@ -23,6 +23,7 @@ package uuid
 
 import (
 	"bytes"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -50,6 +51,16 @@ func TestEqual(t *testing.T) {
 	if Equal(NamespaceDNS, NamespaceURL) {
 		t.Errorf("Incorrect comparison of %s and %s", NamespaceDNS, NamespaceURL)
 	}
+}
+
+func TestNoHyphens(t *testing.T) {
+	s := "6ba7b8109dad11d180b400c04fd430c8"
+	ex := "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+
+	u1, err := FromString(s)
+	assert.Nil(t, err)
+
+	assert.Equal(t, ex, u1.String())
 }
 
 func TestOr(t *testing.T) {
@@ -256,7 +267,6 @@ func TestFromStringLong(t *testing.T) {
 func TestFromStringInvalid(t *testing.T) {
 	// Invalid UUID string formats
 	s := []string{
-		"6ba7b8109dad11d180b400c04fd430c8",
 		"6ba7b8109dad11d180b400c04fd430c86ba7b8109dad11d180b400c04fd430c8",
 		"urn:uuid:{6ba7b810-9dad-11d1-80b4-00c04fd430c8}",
 		"6ba7b8109-dad-11d1-80b4-00c04fd430c8",
