@@ -200,15 +200,14 @@ func (u UUID) String() string {
 
 	hex.Encode(buf[0:], u[0:])
 
-	// nolanc:
-	//buf[8] = dash
-	//hex.Encode(buf[9:13], u[4:6])
-	//buf[13] = dash
-	//hex.Encode(buf[14:18], u[6:8])
-	//buf[18] = dash
-	//hex.Encode(buf[19:23], u[8:10])
-	//buf[23] = dash
-	//hex.Encode(buf[24:], u[10:])
+	buf[8] = dash
+	hex.Encode(buf[9:13], u[4:6])
+	buf[13] = dash
+	hex.Encode(buf[14:18], u[6:8])
+	buf[18] = dash
+	hex.Encode(buf[19:23], u[8:10])
+	buf[23] = dash
+	hex.Encode(buf[24:], u[10:])
 
 	return string(buf)
 }
@@ -227,9 +226,6 @@ func (u *UUID) SetVariant() {
 // The encoding is the same as returned by String.
 func (u UUID) MarshalText() (text []byte, err error) {
 	text = []byte(u.String())
-
-	// nolanc:
-	text = []byte(strings.Replace(string(text), "-", "", -1))
 
 	return
 }
