@@ -488,6 +488,11 @@ func NewV5(ns UUID, name string) UUID {
 	return u
 }
 
+// nolanc: Add new Must function that newer satori package uses to make it easier to remove fork in future as some repos make use of it.
+func Must(uuid UUID) UUID {
+	return uuid
+}
+
 // Returns UUID based on hashing of namespace UUID and name.
 func newFromHash(h hash.Hash, ns UUID, name string) UUID {
 	u := UUID{}
