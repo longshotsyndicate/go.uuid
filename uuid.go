@@ -374,7 +374,7 @@ func (u UUID) MarshalTo(data []byte) (n int, err error) {
 }
 
 // Unmarshal implements the protobuf interface
-func (u UUID) Unmarshal(data []byte) error {
+func (u *UUID) Unmarshal(data []byte) error {
 	return u.UnmarshalBinary(data)
 }
 
