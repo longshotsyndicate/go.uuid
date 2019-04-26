@@ -362,6 +362,27 @@ func (u *NullUUID) Scan(src interface{}) error {
 	return u.UUID.Scan(src)
 }
 
+// Marshal implements the protobuf interface
+func (u UUID) Marshal() ([]byte, error) {
+	return u.MarshalBinary()
+}
+
+// MarshalTo implements the protobuf interface
+func (u UUID) MarshalTo(data []byte) (n int, err error) {
+	copy(data, u.Bytes())
+	return 16, nil
+}
+
+// Unmarshal implements the protobuf interface
+func (u UUID) Unmarshal(data []byte) error {
+	return u.UnmarshalBinary(data)
+}
+
+// Size implements the protobuf interface
+func (u UUID) Size() int {
+	return 16
+}
+
 // FromBytes returns UUID converted from raw byte slice input.
 // It will return error if the slice isn't 16 bytes long.
 func FromBytes(input []byte) (u UUID, err error) {
